@@ -1,6 +1,433 @@
+# Stratos Landing Page Redesign - Implementation Plan
+
+> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
+
+**Goal:** Transform the Stratos landing page from standard SaaS styling to "The Drafting Table" aesthetic—blueprint precision meets workshop warmth with earth & stone colors.
+
+**Architecture:** Incremental CSS-first approach. Update design tokens first, then progressively restyle each section. Add scroll-based interactions last. No new dependencies except Google Fonts.
+
+**Tech Stack:** Next.js 14, React 19, Tailwind CSS v4, existing shadcn/ui components
+
+---
+
+## Task 1: Add Fraunces Font
+
+**Files:**
+- Modify: `app/layout.tsx`
+
+**Step 1: Update layout.tsx to import Fraunces from Google Fonts**
+
+Replace the entire file with:
+
+```tsx
+import type React from "react"
+import type { Metadata } from "next"
+import { Fraunces } from "next/font/google"
+import "./globals.css"
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+  display: "swap",
+})
+
+export const metadata: Metadata = {
+  title: "Stratos - Preconstruction for Specialty Trades",
+  description: "Fewer misses. Tighter bids. AI-native preconstruction that turns messy plan sets into defensible bid packages.",
+  generator: "v0.app",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="en" className={fraunces.variable}>
+      <body className="font-sans antialiased">{children}</body>
+    </html>
+  )
+}
+```
+
+**Step 2: Verify the dev server runs without errors**
+
+Run: `pnpm dev`
+Expected: Server starts, no font loading errors in console
+
+**Step 3: Commit**
+
+```bash
+git add app/layout.tsx
+git commit -m "feat: add Fraunces serif font for headings"
+```
+
+---
+
+## Task 2: Update Color System
+
+**Files:**
+- Modify: `app/globals.css`
+
+**Step 1: Replace the color tokens in globals.css**
+
+Replace the `:root` block (lines 7-41) with:
+
+```css
+:root {
+  /* The Drafting Table - Earth & Stone palette */
+  --background: oklch(0.97 0.01 85);        /* Warm Parchment */
+  --foreground: oklch(0.25 0.01 250);       /* Charcoal Slate */
+  --card: oklch(0.99 0.005 85);             /* White with warmth */
+  --card-foreground: oklch(0.25 0.01 250);
+  --popover: oklch(0.99 0.005 85);
+  --popover-foreground: oklch(0.25 0.01 250);
+  --primary: oklch(0.55 0.12 45);           /* Terracotta */
+  --primary-foreground: oklch(0.99 0.005 85);
+  --secondary: oklch(0.92 0.02 75);         /* Sandstone */
+  --secondary-foreground: oklch(0.25 0.01 250);
+  --muted: oklch(0.92 0.02 75);             /* Sandstone */
+  --muted-foreground: oklch(0.55 0.01 80);  /* Warm Gray */
+  --accent: oklch(0.65 0.08 145);           /* Sage */
+  --accent-foreground: oklch(0.25 0.01 250);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.99 0.005 85);
+  --border: oklch(0.75 0.03 230);           /* Blueprint Slate */
+  --input: oklch(0.88 0.02 80);
+  --ring: oklch(0.55 0.12 45);              /* Terracotta */
+  --chart-1: oklch(0.55 0.12 45);
+  --chart-2: oklch(0.65 0.08 145);
+  --chart-3: oklch(0.55 0.15 220);
+  --chart-4: oklch(0.65 0.1 260);
+  --chart-5: oklch(0.6 0.15 280);
+  --radius: 0.25rem;
+  --sidebar: oklch(0.92 0.02 75);
+  --sidebar-foreground: oklch(0.25 0.01 250);
+  --sidebar-primary: oklch(0.55 0.12 45);
+  --sidebar-primary-foreground: oklch(0.99 0.005 85);
+  --sidebar-accent: oklch(0.92 0.02 75);
+  --sidebar-accent-foreground: oklch(0.25 0.01 250);
+  --sidebar-border: oklch(0.75 0.03 230);
+  --sidebar-ring: oklch(0.55 0.12 45);
+
+  /* Custom colors for the design */
+  --warm-gray: oklch(0.55 0.01 80);
+  --blueprint-slate: oklch(0.75 0.03 230);
+  --terracotta: oklch(0.55 0.12 45);
+  --sage: oklch(0.65 0.08 145);
+  --sandstone: oklch(0.92 0.02 75);
+  --parchment: oklch(0.97 0.01 85);
+  --charcoal: oklch(0.25 0.01 250);
+  --cream: oklch(0.98 0.005 80);
+
+  /* Animation tokens */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 200ms;
+  --duration-base: 300ms;
+  --duration-slow: 500ms;
+}
+```
+
+**Step 2: Update the @theme inline block to include new custom colors**
+
+After the existing `--color-sidebar-ring` line (around line 118), add:
+
+```css
+  --color-warm-gray: var(--warm-gray);
+  --color-blueprint-slate: var(--blueprint-slate);
+  --color-terracotta: var(--terracotta);
+  --color-sage: var(--sage);
+  --color-sandstone: var(--sandstone);
+  --color-parchment: var(--parchment);
+  --color-charcoal: var(--charcoal);
+  --color-cream: var(--cream);
+  --font-serif: var(--font-fraunces);
+```
+
+**Step 3: Verify colors appear in browser**
+
+Run: `pnpm dev`
+Expected: Background should now appear as warm parchment (cream-ish) instead of pure white
+
+**Step 4: Commit**
+
+```bash
+git add app/globals.css
+git commit -m "feat: update color system to Earth & Stone palette"
+```
+
+---
+
+## Task 3: Add Blueprint Grid Pattern
+
+**Files:**
+- Modify: `app/globals.css`
+
+**Step 1: Replace the existing grid-pattern classes**
+
+Find the `.grid-pattern` section (around lines 131-141) and replace with:
+
+```css
+/* Blueprint grid pattern - The Drafting Table aesthetic */
+.grid-pattern {
+  background-image:
+    linear-gradient(var(--blueprint-slate) 1px, transparent 1px),
+    linear-gradient(90deg, var(--blueprint-slate) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.grid-pattern-dense {
+  background-image:
+    linear-gradient(var(--blueprint-slate) 1px, transparent 1px),
+    linear-gradient(90deg, var(--blueprint-slate) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.4;
+}
+
+.grid-pattern-mobile {
+  background-image:
+    linear-gradient(var(--blueprint-slate) 1px, transparent 1px),
+    linear-gradient(90deg, var(--blueprint-slate) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+/* Gradient overlay for grid fade effect */
+.grid-fade-overlay {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--parchment) 100%
+  );
+}
+```
+
+**Step 2: Verify grid pattern works**
+
+Temporarily add `grid-pattern` class to a div in page.tsx to test
+Expected: Fine blueprint-style grid lines should appear
+
+**Step 3: Commit**
+
+```bash
+git add app/globals.css
+git commit -m "feat: add blueprint grid pattern styles"
+```
+
+---
+
+## Task 4: Create Scroll Animation Hook
+
+**Files:**
+- Create: `hooks/use-scroll-fade.ts`
+
+**Step 1: Create the scroll fade hook**
+
+```typescript
+"use client"
+
+import { useEffect, useState } from "react"
+
+export function useScrollFade(maxScroll: number = 800) {
+  const [opacity, setOpacity] = useState(1)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY
+      const newOpacity = Math.max(0, 1 - scrollY / maxScroll)
+      setOpacity(newOpacity)
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    handleScroll() // Initial call
+
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [maxScroll])
+
+  return opacity
+}
+```
+
+**Step 2: Verify file exists and has no syntax errors**
+
+Run: `pnpm dev`
+Expected: No errors related to the new hook
+
+**Step 3: Commit**
+
+```bash
+git add hooks/use-scroll-fade.ts
+git commit -m "feat: add useScrollFade hook for grid opacity"
+```
+
+---
+
+## Task 5: Create Scroll Reveal Hook
+
+**Files:**
+- Create: `hooks/use-scroll-reveal.ts`
+
+**Step 1: Create the Intersection Observer hook**
+
+```typescript
+"use client"
+
+import { useEffect, useRef, useState } from "react"
+
+interface UseScrollRevealOptions {
+  threshold?: number
+  rootMargin?: string
+  triggerOnce?: boolean
+}
+
+export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(
+  options: UseScrollRevealOptions = {}
+) {
+  const { threshold = 0.1, rootMargin = "0px", triggerOnce = true } = options
+  const ref = useRef<T>(null)
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    const element = ref.current
+    if (!element) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+          if (triggerOnce) {
+            observer.unobserve(element)
+          }
+        } else if (!triggerOnce) {
+          setIsVisible(false)
+        }
+      },
+      { threshold, rootMargin }
+    )
+
+    observer.observe(element)
+
+    return () => observer.disconnect()
+  }, [threshold, rootMargin, triggerOnce])
+
+  return { ref, isVisible }
+}
+```
+
+**Step 2: Verify file exists**
+
+Run: `pnpm dev`
+Expected: No errors
+
+**Step 3: Commit**
+
+```bash
+git add hooks/use-scroll-reveal.ts
+git commit -m "feat: add useScrollReveal hook for entrance animations"
+```
+
+---
+
+## Task 6: Add Animation Utility Classes
+
+**Files:**
+- Modify: `app/globals.css`
+
+**Step 1: Add animation classes at the end of globals.css**
+
+```css
+/* Scroll reveal animations */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--duration-slow) var(--ease-smooth),
+              transform var(--duration-slow) var(--ease-smooth);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 100ms; }
+.reveal-delay-2 { transition-delay: 200ms; }
+.reveal-delay-3 { transition-delay: 300ms; }
+.reveal-delay-4 { transition-delay: 400ms; }
+
+/* Smooth transitions for interactive elements */
+.transition-smooth {
+  transition: all var(--duration-base) var(--ease-smooth);
+}
+
+/* Card hover effects */
+.card-hover {
+  transition: transform var(--duration-base) var(--ease-smooth),
+              border-color var(--duration-base) var(--ease-smooth),
+              box-shadow var(--duration-base) var(--ease-smooth);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  border-color: var(--terracotta);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Button hover lift */
+.btn-lift {
+  transition: transform var(--duration-fast) var(--ease-smooth),
+              box-shadow var(--duration-fast) var(--ease-smooth);
+}
+
+.btn-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(196, 97, 74, 0.25);
+}
+
+/* Nav scroll state */
+.nav-scrolled {
+  background-color: var(--parchment);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--blueprint-slate);
+}
+
+/* Serif heading utility */
+.font-serif {
+  font-family: var(--font-fraunces), Georgia, serif;
+}
+```
+
+**Step 2: Verify CSS is valid**
+
+Run: `pnpm dev`
+Expected: No CSS errors
+
+**Step 3: Commit**
+
+```bash
+git add app/globals.css
+git commit -m "feat: add animation utility classes"
+```
+
+---
+
+## Task 7: Redesign Navigation Bar
+
+**Files:**
+- Modify: `app/page.tsx`
+
+**Step 1: Create the navigation scroll state hook usage and update nav**
+
+Replace lines 1-40 (imports and nav section) with:
+
+```tsx
 "use client"
 
 import { useState, useEffect } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -31,11 +458,16 @@ export default function HomePage() {
       >
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <img
-              src="/stratos-wordmark.svg"
-              alt="Stratos"
-              className="h-7 w-auto"
-            />
+            <div className="relative h-8 w-32">
+              <Image
+                src="/stratos-wordmark.png"
+                alt="Stratos"
+                fill
+                className={`object-contain transition-all duration-300 ${
+                  navScrolled ? "" : "brightness-0"
+                }`}
+              />
+            </div>
             <div className="hidden md:flex items-center gap-8">
               <a
                 href="#how-it-works"
@@ -58,7 +490,7 @@ export default function HomePage() {
             </div>
             <DemoModal
               trigger={
-                <Button size="sm" className="bg-terracotta hover:bg-terracotta/90 text-white btn-lift">
+                <Button size="sm" className="bg-terracotta hover:bg-terracotta/90 btn-lift">
                   Request a demo
                 </Button>
               }
@@ -66,7 +498,32 @@ export default function HomePage() {
           </div>
         </div>
       </nav>
+```
 
+**Step 2: Verify navigation renders**
+
+Run: `pnpm dev`
+Expected: Nav should be fixed, transparent at top, gains background on scroll
+
+**Step 3: Commit**
+
+```bash
+git add app/page.tsx
+git commit -m "feat: redesign navigation with scroll state"
+```
+
+---
+
+## Task 8: Redesign Hero Section
+
+**Files:**
+- Modify: `app/page.tsx`
+
+**Step 1: Replace the hero section (after nav closing tag)**
+
+Find the first `<section>` after the nav and replace it with:
+
+```tsx
       {/* Hero Section with Blueprint Grid */}
       <section className="relative pt-32 pb-24 lg:pt-40 lg:pb-32 overflow-hidden">
         {/* Blueprint grid background */}
@@ -111,7 +568,32 @@ export default function HomePage() {
           </svg>
         </div>
       </section>
+```
 
+**Step 2: Verify hero renders with grid**
+
+Run: `pnpm dev`
+Expected: Centered hero with serif heading, grid fades as you scroll
+
+**Step 3: Commit**
+
+```bash
+git add app/page.tsx
+git commit -m "feat: redesign hero section with blueprint grid"
+```
+
+---
+
+## Task 9: Add Social Proof Strip
+
+**Files:**
+- Modify: `app/page.tsx`
+
+**Step 1: Add social proof section after hero**
+
+Insert after the hero section closing tag:
+
+```tsx
       {/* Social Proof Strip */}
       <section className="py-8 border-y border-blueprint-slate/20">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
@@ -120,7 +602,32 @@ export default function HomePage() {
           </p>
         </div>
       </section>
+```
 
+**Step 2: Verify it appears**
+
+Run: `pnpm dev`
+Expected: Simple strip appears between hero and features
+
+**Step 3: Commit**
+
+```bash
+git add app/page.tsx
+git commit -m "feat: add social proof strip"
+```
+
+---
+
+## Task 10: Redesign Features Section
+
+**Files:**
+- Modify: `app/page.tsx`
+
+**Step 1: Replace the features/key points section**
+
+Find the section with "Fast turnaround", "Human-verified", "Excel output" and replace:
+
+```tsx
       {/* Value Props Section */}
       <section className="py-20 lg:py-28 bg-sandstone/50">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
@@ -140,7 +647,30 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+```
 
+**Step 2: Verify styling**
+
+Run: `pnpm dev`
+Expected: Clean three-column layout with serif headings on sandstone background
+
+**Step 3: Commit**
+
+```bash
+git add app/page.tsx
+git commit -m "feat: redesign value props section"
+```
+
+---
+
+## Task 11: Redesign "What You Get" Section
+
+**Files:**
+- Modify: `app/page.tsx`
+
+**Step 1: Replace the "What you get" section with cards**
+
+```tsx
       {/* What You Get Section */}
       <section className="py-20 lg:py-28">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
@@ -187,7 +717,30 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+```
 
+**Step 2: Verify cards render with hover effect**
+
+Run: `pnpm dev`
+Expected: Three cards with line icons, border turns terracotta on hover
+
+**Step 3: Commit**
+
+```bash
+git add app/page.tsx
+git commit -m "feat: redesign What You Get section with card hover effects"
+```
+
+---
+
+## Task 12: Redesign Trades Section
+
+**Files:**
+- Modify: `app/page.tsx`
+
+**Step 1: Replace the Trades section**
+
+```tsx
       {/* Trades Section */}
       <section id="trades" className="py-20 lg:py-28 bg-sandstone/30">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
@@ -199,13 +752,13 @@ export default function HomePage() {
             <TabsList className="mb-8 bg-transparent border-b border-blueprint-slate/20 rounded-none p-0 h-auto">
               <TabsTrigger
                 value="glazing"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-terracotta data-[state=active]:bg-transparent data-[state=active]:text-charcoal data-[state=active]:shadow-none px-6 py-3 text-warm-gray"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-terracotta data-[state=active]:bg-transparent data-[state=active]:text-charcoal px-6 py-3 text-warm-gray"
               >
                 Glazing
               </TabsTrigger>
               <TabsTrigger
                 value="signage"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-terracotta data-[state=active]:bg-transparent data-[state=active]:text-charcoal data-[state=active]:shadow-none px-6 py-3 text-warm-gray"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-terracotta data-[state=active]:bg-transparent data-[state=active]:text-charcoal px-6 py-3 text-warm-gray"
               >
                 Signage
               </TabsTrigger>
@@ -269,7 +822,30 @@ export default function HomePage() {
           </Tabs>
         </div>
       </section>
+```
 
+**Step 2: Verify tabs work with new styling**
+
+Run: `pnpm dev`
+Expected: Tabs styled with underline, terracotta active state
+
+**Step 3: Commit**
+
+```bash
+git add app/page.tsx
+git commit -m "feat: redesign Trades section with styled tabs"
+```
+
+---
+
+## Task 13: Redesign How It Works Section
+
+**Files:**
+- Modify: `app/page.tsx`
+
+**Step 1: Replace How It Works section with timeline**
+
+```tsx
       {/* How It Works Section */}
       <section id="how-it-works" className="py-20 lg:py-28">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
@@ -316,7 +892,30 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+```
 
+**Step 2: Verify timeline renders**
+
+Run: `pnpm dev`
+Expected: Three steps with terracotta numbered circles, connecting line on desktop
+
+**Step 3: Commit**
+
+```bash
+git add app/page.tsx
+git commit -m "feat: redesign How It Works with timeline layout"
+```
+
+---
+
+## Task 14: Redesign FAQ Section
+
+**Files:**
+- Modify: `app/page.tsx`
+
+**Step 1: Replace FAQ section**
+
+```tsx
       {/* FAQ Section */}
       <section id="faq" className="py-20 lg:py-28 bg-sandstone/30">
         <div className="max-w-3xl mx-auto px-6 lg:px-8">
@@ -325,7 +924,7 @@ export default function HomePage() {
           </h2>
           <Accordion type="single" collapsible className="w-full space-y-4">
             <AccordionItem value="item-1" className="border border-blueprint-slate/20 rounded bg-white px-6">
-              <AccordionTrigger className="text-left font-medium text-charcoal hover:text-terracotta py-5 hover:no-underline">
+              <AccordionTrigger className="text-left font-medium text-charcoal hover:text-terracotta py-5">
                 How fast can you turn around a project?
               </AccordionTrigger>
               <AccordionContent className="text-warm-gray pb-5">
@@ -334,7 +933,7 @@ export default function HomePage() {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2" className="border border-blueprint-slate/20 rounded bg-white px-6">
-              <AccordionTrigger className="text-left font-medium text-charcoal hover:text-terracotta py-5 hover:no-underline">
+              <AccordionTrigger className="text-left font-medium text-charcoal hover:text-terracotta py-5">
                 What file formats do you need?
               </AccordionTrigger>
               <AccordionContent className="text-warm-gray pb-5">
@@ -343,7 +942,7 @@ export default function HomePage() {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3" className="border border-blueprint-slate/20 rounded bg-white px-6">
-              <AccordionTrigger className="text-left font-medium text-charcoal hover:text-terracotta py-5 hover:no-underline">
+              <AccordionTrigger className="text-left font-medium text-charcoal hover:text-terracotta py-5">
                 How does pricing work?
               </AccordionTrigger>
               <AccordionContent className="text-warm-gray pb-5">
@@ -352,7 +951,7 @@ export default function HomePage() {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-4" className="border border-blueprint-slate/20 rounded bg-white px-6">
-              <AccordionTrigger className="text-left font-medium text-charcoal hover:text-terracotta py-5 hover:no-underline">
+              <AccordionTrigger className="text-left font-medium text-charcoal hover:text-terracotta py-5">
                 How do you do the takeoffs?
               </AccordionTrigger>
               <AccordionContent className="text-warm-gray pb-5">
@@ -361,7 +960,7 @@ export default function HomePage() {
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-5" className="border border-blueprint-slate/20 rounded bg-white px-6">
-              <AccordionTrigger className="text-left font-medium text-charcoal hover:text-terracotta py-5 hover:no-underline">
+              <AccordionTrigger className="text-left font-medium text-charcoal hover:text-terracotta py-5">
                 Can I try it first?
               </AccordionTrigger>
               <AccordionContent className="text-warm-gray pb-5">
@@ -371,7 +970,30 @@ export default function HomePage() {
           </Accordion>
         </div>
       </section>
+```
 
+**Step 2: Verify accordion styling**
+
+Run: `pnpm dev`
+Expected: Cards with spacing, hover color on triggers
+
+**Step 3: Commit**
+
+```bash
+git add app/page.tsx
+git commit -m "feat: redesign FAQ section with card-style accordions"
+```
+
+---
+
+## Task 15: Redesign Final CTA Section
+
+**Files:**
+- Modify: `app/page.tsx`
+
+**Step 1: Replace final CTA section**
+
+```tsx
       {/* Final CTA Section */}
       <section className="py-24 lg:py-32 bg-cream">
         <div className="max-w-6xl mx-auto px-6 lg:px-8 text-center">
@@ -393,20 +1015,141 @@ export default function HomePage() {
           />
         </div>
       </section>
+```
 
+**Step 2: Verify CTA renders with maximum breathing room**
+
+Run: `pnpm dev`
+Expected: Light cream background, generous padding, centered content
+
+**Step 3: Commit**
+
+```bash
+git add app/page.tsx
+git commit -m "feat: redesign final CTA section"
+```
+
+---
+
+## Task 16: Redesign Footer
+
+**Files:**
+- Modify: `app/page.tsx`
+
+**Step 1: Replace footer**
+
+```tsx
       {/* Footer */}
       <footer className="py-12 border-t border-blueprint-slate/20 bg-parchment">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <img
-              src="/stratos-wordmark.svg"
-              alt="Stratos"
-              className="h-5 w-auto"
-            />
-            <p className="text-sm text-warm-gray">© 2026 Stratos. All rights reserved.</p>
+            <div className="relative h-6 w-24">
+              <Image src="/stratos-wordmark.png" alt="Stratos" fill className="object-contain" />
+            </div>
+            <p className="text-sm text-warm-gray">© 2025 Stratos. All rights reserved.</p>
           </div>
         </div>
       </footer>
     </div>
   )
 }
+```
+
+**Step 2: Verify footer styling**
+
+Run: `pnpm dev`
+Expected: Minimal footer with warm parchment background, subtle top border
+
+**Step 3: Commit**
+
+```bash
+git add app/page.tsx
+git commit -m "feat: redesign footer with minimal styling"
+```
+
+---
+
+## Task 17: Add Tailwind Custom Colors Config
+
+**Files:**
+- Modify: `app/globals.css`
+
+**Step 1: Ensure Tailwind recognizes our custom colors**
+
+Add to the `@theme inline` block (if not already present):
+
+```css
+  /* Ensure custom colors work as Tailwind utilities */
+  --color-warm-gray: var(--warm-gray);
+  --color-blueprint-slate: var(--blueprint-slate);
+  --color-terracotta: var(--terracotta);
+  --color-sage: var(--sage);
+  --color-sandstone: var(--sandstone);
+  --color-parchment: var(--parchment);
+  --color-charcoal: var(--charcoal);
+  --color-cream: var(--cream);
+```
+
+**Step 2: Verify all color utilities work**
+
+Run: `pnpm dev`
+Expected: `bg-parchment`, `text-charcoal`, `border-terracotta` etc. all work
+
+**Step 3: Commit**
+
+```bash
+git add app/globals.css
+git commit -m "feat: ensure custom color utilities work in Tailwind"
+```
+
+---
+
+## Task 18: Final Polish and Build Verification
+
+**Files:**
+- All modified files
+
+**Step 1: Run the build to check for errors**
+
+Run: `pnpm build`
+Expected: Build completes without errors
+
+**Step 2: Run linting**
+
+Run: `pnpm lint`
+Expected: No lint errors (warnings are okay)
+
+**Step 3: Test in browser**
+
+Run: `pnpm dev`
+Manually verify:
+- [ ] Navigation: Fixed, transparent → opaque on scroll
+- [ ] Hero: Grid visible, fades on scroll, serif heading
+- [ ] All sections have proper Earth & Stone colors
+- [ ] Cards have hover effects (border → terracotta)
+- [ ] Buttons have lift effect on hover
+- [ ] Timeline numbers are terracotta circles
+- [ ] FAQ items are card-styled
+- [ ] Final CTA has maximum white space
+- [ ] Mobile responsive (test at 375px width)
+
+**Step 4: Final commit**
+
+```bash
+git add -A
+git commit -m "chore: final polish and build verification"
+```
+
+---
+
+## Summary
+
+This plan transforms the Stratos landing page through 18 incremental tasks:
+
+1. **Tasks 1-3:** Foundation (fonts, colors, grid pattern)
+2. **Tasks 4-6:** Animation infrastructure (hooks, utility classes)
+3. **Tasks 7-8:** Navigation and Hero redesign
+4. **Tasks 9-16:** Section-by-section content updates
+5. **Tasks 17-18:** Polish and verification
+
+Each task is self-contained and produces a working state. Commit after each task to maintain easy rollback points.
