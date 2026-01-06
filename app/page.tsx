@@ -289,7 +289,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="font-serif text-xl font-semibold mb-3 text-charcoal">Send your plans</h3>
                 <p className="text-warm-gray">
-                  Email us your PDFs or upload through our portal. We accept architectural drawings,
+                  Email us your PDFs, DWGs, or other CAD files. We accept architectural drawings,
                   schedules, and specs.
                 </p>
               </div>
@@ -335,11 +335,11 @@ export default function HomePage() {
             </AccordionItem>
             <AccordionItem value="item-2" className="border border-blueprint-slate/20 rounded bg-white px-6">
               <AccordionTrigger className="text-left font-medium text-charcoal hover:text-terracotta py-5 hover:no-underline">
-                What file formats do you need?
+                What file formats do you accept?
               </AccordionTrigger>
               <AccordionContent className="text-warm-gray pb-5">
-                PDFs work best. Just send us your architectural drawings, schedules, and any
-                signage documents. We'll handle the rest.
+                We accept PDFs, DWG, DXF, RVT, and other common CAD formats. Just send us your
+                architectural drawings, schedules, and signage documents—we'll handle the rest.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-3" className="border border-blueprint-slate/20 rounded bg-white px-6">
