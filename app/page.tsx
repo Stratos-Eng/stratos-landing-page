@@ -127,10 +127,10 @@ export default function HomePage() {
       </section>
 
       {/* Platform Logo Strip */}
-      <section className="py-10 border-y border-blueprint-slate/20 bg-sandstone/30">
+      <section className="py-12 border-y border-blueprint-slate/20 bg-sandstone/30">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
-          <p className="text-center text-sm text-warm-gray mb-6">
-            Connects to the platforms you already use
+          <p className="text-center font-serif text-xl font-semibold text-charcoal mb-8">
+            One place to manage bids from every source
           </p>
           <div className="flex flex-wrap justify-center items-center gap-8 lg:gap-12">
             {bidPlatforms.map((platform) => (
