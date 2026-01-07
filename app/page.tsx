@@ -132,13 +132,13 @@ export default function HomePage() {
           <p className="text-center font-serif text-xl font-semibold text-charcoal mb-8">
             One place to manage bids from every source
           </p>
-          <div className="flex flex-wrap justify-center items-center gap-8 lg:gap-12">
+          <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-4 sm:gap-x-8 lg:gap-x-12">
             {bidPlatforms.map((platform) => (
               <img
                 key={platform.name}
                 src={platform.logo}
                 alt={platform.name}
-                className="h-6 w-auto opacity-60 hover:opacity-100 transition-opacity"
+                className="h-5 sm:h-6 w-auto opacity-50 hover:opacity-80 transition-opacity"
               />
             ))}
           </div>
