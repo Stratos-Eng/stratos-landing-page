@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { DemoModal } from "@/components/demo-modal"
 import { useScrollFade } from "@/hooks/use-scroll-fade"
 
 const bidPlatforms = [
@@ -67,13 +66,11 @@ export default function HomePage() {
                 FAQ
               </a>
             </div>
-            <DemoModal
-              trigger={
-                <Button size="sm" className="bg-terracotta hover:bg-terracotta/90 text-white btn-lift">
-                  Request a demo
-                </Button>
-              }
-            />
+            <a href="https://app.stratos.to/login">
+              <Button size="sm" className="bg-terracotta hover:bg-terracotta/90 text-white btn-lift">
+                Sign In
+              </Button>
+            </a>
           </div>
         </div>
       </nav>
@@ -103,13 +100,11 @@ export default function HomePage() {
               qualifies opportunities with a quick takeoff, and delivers full bid packages—so
               you can bid more and win more.
             </p>
-            <DemoModal
-              trigger={
-                <Button size="lg" className="bg-terracotta hover:bg-terracotta/90 text-white px-8 py-6 text-base btn-lift">
-                  Request a demo
-                </Button>
-              }
-            />
+            <a href="https://app.stratos.to/login">
+              <Button size="lg" className="bg-terracotta hover:bg-terracotta/90 text-white px-8 py-6 text-base btn-lift">
+                Sign In
+              </Button>
+            </a>
           </div>
         </div>
 
@@ -413,16 +408,14 @@ export default function HomePage() {
           <p className="text-warm-gray mb-10 max-w-md mx-auto text-lg">
             Stop drowning in bid invites. Turn your inbox into a pipeline.
           </p>
-          <DemoModal
-            trigger={
-              <Button
-                size="lg"
-                className="bg-terracotta hover:bg-terracotta/90 text-white px-8 py-6 text-base btn-lift"
-              >
-                Request a demo
-              </Button>
-            }
-          />
+          <a href="https://app.stratos.to/login">
+            <Button
+              size="lg"
+              className="bg-terracotta hover:bg-terracotta/90 text-white px-8 py-6 text-base btn-lift"
+            >
+              Sign In
+            </Button>
+          </a>
         </div>
       </section>
 
